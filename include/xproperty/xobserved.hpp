@@ -83,7 +83,9 @@ namespace xp
     {
         observe_impl(name, [observer = std::move(observer)](std::any& owner)
         {
-            observer(std::any_cast<std::reference_wrapper<D>>(owner).get());
+            auto* base = std::any_cast<xobserved*>(owner);
+            auto* derived = static_cast<D*>(base);
+            observer(*derived);
         });
     }
 
@@ -97,7 +99,9 @@ namespace xp
     {
         validate_impl(name, [validator = std::move(validator)](std::any& owner, std::any& proposal)
         {
-            validator(std::any_cast<std::reference_wrapper<D>>(owner).get(), std::any_cast<V&>(proposal));
+            auto* base = std::any_cast<xobserved*>(owner);
+            auto* derived = static_cast<D*>(base);
+            validator(*derived, std::any_cast<V&>(proposal));
         });
     }
 

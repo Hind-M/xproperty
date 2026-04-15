@@ -16,6 +16,7 @@
 
 namespace xp
 {
+    class xobserved;
 
     #define XP_NOEXCEPT(V) noexcept(noexcept((std::is_nothrow_constructible<V>::value)))
 
@@ -174,7 +175,7 @@ namespace xp
     template <class V>
     inline auto xproperty<T, O>::operator=(V&& value) -> reference
     {
-        auto owner_any = std::any(std::ref(*owner()));
+        auto owner_any = std::any(static_cast<xobserved*>(owner()));
         m_value = owner()->template invoke_validators<T>(m_name, owner_any, std::forward<V>(value));
         owner()->notify(m_name, m_value);
         owner()->invoke_observers(m_name, owner_any);
